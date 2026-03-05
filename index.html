@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="id" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Memori X RPL 5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <!-- Welcome Screen -->
+  <body class="min-h-full overflow-x-hidden">
+    <div id="app" class="relative w-full h-full">
+      <div
+        id="welcome-screen"
+        class="screen min-h-full flex flex-col items-center justify-center p-6"
+      >
+        <div class="max-w-md w-full text-center">
+          <div class="mb-6 float-animation text-6xl">🎮</div>
+          <h1 class="text-4xl text-white font-extrabold gradient-text mb-2">
+            Memori Game
+          </h1>
+          <p class="text-white mb-8">Meningkatkan Daya Ingat</p>
+
+          <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+            <input
+              type="text"
+              id="player-name"
+              placeholder="Masukkan Nama..."
+              class="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:border-red-500 outline-none transition-all mb-4"
+            />
+            <p class="text-left text-sm font-bold text-gray-500 mb-3">
+              Pilih Mapel:
+            </p>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                onclick="selectMode('ppkn')"
+                class="mode-btn p-2 border-2 border-gray-100 rounded-lg text-xs font-bold active-mode"
+              >
+                📜PPKn
+              </button>
+              <button
+                onclick="selectMode('agamaislam')"
+                class="mode-btn p-2 border-2 border-gray-100 rounded-lg text-xs font-bold"
+              >
+                🌙Agama
+              </button>
+              <button
+                onclick="selectMode('pjok')"
+                class="mode-btn p-2 border-2 border-gray-100 rounded-lg text-xs font-bold"
+              >
+                🏃‍♂️PJOK
+              </button>
+            </div>
+          </div>
+
+          <button
+            onclick="startGame()"
+            class="w-full py-4 btn-primary text-white font-bold rounded-2xl shadow-lg transition-all mb-4"
+          >
+            🚀 Mulai
+          </button>
+          <button
+            onclick="openLeaderboard()"
+            class="w-full py-3 bg-white border-2 border-blue-600 text-blue-600 font-bold rounded-xl"
+          >
+            🏆 Lihat Leaderboard
+          </button>
+        </div>
+      </div>
+
+      <!-- Game Screen -->
+      <div id="game-screen" class="screen hidden min-h-full flex flex-col p-4">
+        <div
+          class="bg-white rounded-xl shadow-md p-4 mb-4 flex justify-between items-center"
+        >
+          <div class="text-xs">
+            <p class="text-gray-400">Pemain</p>
+            <p id="display-player" class="font-bold">-</p>
+          </div>
+          <div class="flex gap-4 text-center">
+            <div>
+              <p class="text-[10px] text-gray-400">Waktu</p>
+              <p id="timer" class="font-bold text-red-600">00:00</p>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400">Langkah</p>
+              <p id="moves" class="font-bold text-amber-600">0</p>
+            </div>
+          </div>
+        </div>
+        <div
+          id="game-board"
+          class="grid grid-cols-4 gap-2 max-w-lg mx-auto w-full"
+        ></div>
+      </div>
+
+      <!-- Win Screen -->
+      <div
+        id="win-screen"
+        class="screen hidden min-h-full flex items-center justify-center p-6 text-center"
+      >
+        <div
+          class="bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl p-8 max-w-sm w-full border border-white animate-fade-in"
+        >
+          <div class="text-6xl mb-4">🥳</div>
+          <h2 class="text-3xl font-black text-slate-800 mb-2">Luar Biasa!</h2>
+
+          <div
+            class="bg-blue-50/50 rounded-3xl p-6 mb-8 border border-blue-100"
+          >
+            <p
+              class="text-slate-500 text-sm font-bold uppercase tracking-widest mb-1"
+              id="win-player"
+            ></p>
+            <p class="text-5xl font-black text-blue-600 my-2" id="final-score">
+              0
+            </p>
+            <p class="text-xs text-blue-400 font-bold uppercase">
+              Total Skor Akhir
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <button
+              onclick="startGame()"
+              class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg shadow-blue-200 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              🔄 MAIN LAGI
+            </button>
+
+            <button
+              onclick="backToMenu()"
+              class="w-full py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all"
+            >
+              MENU UTAMA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Screen -->
+      <div
+        id="leaderboard-screen"
+        class="screen hidden min-h-full flex items-center justify-center p-4"
+      >
+        <div
+          class="max-w-md w-full bg-white/70 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/50 overflow-hidden flex flex-col h-[85vh] animate-fade-in"
+        >
+          <div
+            class="p-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white relative"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <h2 class="text-3xl font-black tracking-tight">Leaderboard</h2>
+                <p class="text-blue-100 text-sm font-medium mt-1">
+                  Top 10 Pemain Teratas!
+                </p>
+              </div>
+              <button
+                onclick="backToMenu()"
+                class="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-all"
+              >
+              </button>
+            </div>
+            <span class="absolute -bottom-4 -right-4 text-8xl opacity-20"
+              >🏆</span
+            >
+          </div>
+
+          <div
+            id="leaderboard-list"
+            class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar"
+          ></div>
+
+          <div
+            class="p-6 bg-white/50 backdrop-blur-md border-t border-white/20"
+          >
+            <button
+              onclick="backToMenu()"
+              class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg shadow-blue-200 hover:scale-[1.02] active:scale-[0.98] transition-all tracking-wide"
+            >
+              KEMBALI KE MENU
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
