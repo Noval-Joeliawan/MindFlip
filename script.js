@@ -34,19 +34,18 @@ const pjokCards = [
 
 // Status Game
 let gameState = {
-  mode: "ppkn", // Kategori yang dipilih
-  playerName: "", // Nama pemain
-  cards: [], // Array kartu yang sudah di-acak (shuffle)
-  flippedCards: [], // Menyimpan kartu yang sedang dibuka (maksimal 2)
-  matchedPairs: 0, // Jumlah pasangan yang sudah ketemu
-  moves: 0, // Jumlah klik/langkah pemain
-  timer: 0, // Waktu berjalan (detik)
-  timerInterval: null, // ID interval untuk hitung mundur/maju
-  isLocked: false, // Mengunci papan saat animasi cek kartu sedang jalan
+  mode: "ppkn",
+  playerName: "",
+  cards: [],
+  flippedCards: [],
+  matchedPairs: 0,
+  moves: 0,
+  timer: 0,
+  timerInterval: null,
+  isLocked: false,
 };
 
 // Navigasi Layar
-// Fungsi untuk pindah antar menu (Welcome -> Game -> Win)
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((s) => {
     s.classList.add("hidden");
@@ -58,12 +57,13 @@ function showScreen(screenId) {
 }
 
 // Logika Pilih Mapel di Welcome Screen
-function selectMode(mode) {
+function selectMode(mode, btnElement) {
   gameState.mode = mode;
   document
     .querySelectorAll(".mode-btn")
     .forEach((btn) => btn.classList.remove("active-mode"));
-  event.currentTarget.classList.add("active-mode");
+  const targetBtn = btnElement || (window.event && window.event.currentTarget);
+  if (targetBtn) targetBtn.classList.add("active-mode");
 }
 
 // Logika Permainan saat Dimulai
@@ -71,7 +71,6 @@ function startGame() {
   const name = document.getElementById("player-name").value.trim();
   if (!name) return alert("Isi Nama Mu Dulu ❗❗");
 
-  // Reset status game ke awal
   gameState.playerName = name;
   gameState.moves = 0;
   gameState.matchedPairs = 0;
@@ -79,7 +78,6 @@ function startGame() {
   gameState.flippedCards = [];
   gameState.isLocked = false;
 
-  // Pilih data kartu berdasarkan mode yang dipilih user
   const source =
     gameState.mode === "ppkn"
       ? ppknCards
@@ -87,48 +85,52 @@ function startGame() {
         ? agamaislamCards
         : pjokCards;
 
-  // Logika Shuffle
+  // Shuffle kartu
   gameState.cards = [...source, ...source].sort(() => Math.random() - 0.5);
 
   document.getElementById("display-player").textContent = name;
   document.getElementById("moves").textContent = "0";
+  document.getElementById("timer").textContent = "00:00";
 
   renderBoard();
   startTimer();
   showScreen("game-screen");
 }
 
-// Fungsi untuk membuat elemen HTML kartu satu per satu
+// Render 16 kartu bergaya Flashcard Fisik
 function renderBoard() {
   const board = document.getElementById("game-board");
   board.innerHTML = "";
   gameState.cards.forEach((card, i) => {
     const el = document.createElement("div");
-    el.className = "card-container cursor-pointer";
+    el.className = "card-container cursor-pointer select-none";
     el.innerHTML = `
-            <div class="card-inner w-full h-full">
-                <div class="card-front">?</div>
-                <div class="card-back flex-col p-2 text-center">
-                    <span class="text-3xl">${card.emoji}</span>
-                    <span class="text-[9px] font-extrabold uppercase mt-2 text-slate-500 tracking-wider">${card.name}</span>
-                </div>
-            </div>`;
+      <div class="card-inner w-full h-full">
+        <div class="card-front">
+          <div class="card-front-badge">?</div>
+        </div>
+        <div class="card-back flex-col p-2 text-center">
+          <span class="text-3xl sm:text-4xl drop-shadow-sm">${card.emoji}</span>
+          <span class="text-[9px] sm:text-[10px] font-extrabold uppercase mt-2 text-slate-800 tracking-wide leading-tight px-1 bg-amber-100 rounded border border-slate-900">
+            ${card.name}
+          </span>
+        </div>
+      </div>`;
     el.onclick = () => flipCard(i, el);
     board.appendChild(el);
   });
 }
 
-// logika kartu flip dan match
+// Logika Buka Kartu
 function flipCard(i, el) {
   if (gameState.isLocked || el.classList.contains("card-flipped")) return;
   el.classList.add("card-flipped");
   gameState.flippedCards.push({ i, el });
 
-  // logika saat dua kartu terbuka
   if (gameState.flippedCards.length === 2) {
-    gameState.moves++; // Tambah jumlah langkah
+    gameState.moves++;
     document.getElementById("moves").textContent = gameState.moves;
-    checkMatch(); // Cek apakah sama
+    checkMatch();
   }
 }
 
@@ -136,9 +138,7 @@ function checkMatch() {
   gameState.isLocked = true;
   const [c1, c2] = gameState.flippedCards;
 
-  //logika kecocokan kartu
   if (gameState.cards[c1.i].id === gameState.cards[c2.i].id) {
-    // Jika cocok: Beri tanda matched dan biarkan terbuka
     c1.el.classList.add("card-matched");
     c2.el.classList.add("card-matched");
 
@@ -146,10 +146,8 @@ function checkMatch() {
     gameState.flippedCards = [];
     gameState.isLocked = false;
 
-    // logika saat kartu sudah ketemu semua
     if (gameState.matchedPairs === 8) setTimeout(endGame, 700);
   } else {
-    // Jika tidak cocok: Tutup lagi kartunya dan delay
     setTimeout(() => {
       c1.el.classList.remove("card-flipped");
       c2.el.classList.remove("card-flipped");
@@ -159,7 +157,7 @@ function checkMatch() {
   }
 }
 
-// Logika Timer Dan Scoring
+// Timer & Scoring
 function startTimer() {
   clearInterval(gameState.timerInterval);
   gameState.timerInterval = setInterval(() => {
@@ -175,7 +173,6 @@ function startTimer() {
 function endGame() {
   clearInterval(gameState.timerInterval);
 
-  // Logika hitung skor: (Poin awal - penalti waktu - penalti langkah)
   const score = Math.max(
     0,
     10000 - gameState.timer * 12 - gameState.moves * 40,
@@ -183,11 +180,11 @@ function endGame() {
 
   document.getElementById("win-player").textContent = gameState.playerName;
   document.getElementById("final-score").textContent = score.toLocaleString();
-  saveScore(gameState.playerName, score); // Simpan skor ke LocalStorage
+  saveScore(gameState.playerName, score);
   showScreen("win-screen");
 }
 
-// Penyimpanan Lokal Skor top 10 pemain Leaderboard
+// Leaderboard LocalStorage
 function saveScore(name, score) {
   let data = JSON.parse(localStorage.getItem("memoryLeaderboard")) || [];
   data.push({ name, score, date: new Date().toLocaleDateString() });
@@ -202,45 +199,46 @@ function openLeaderboard() {
   list.innerHTML = data.length
     ? data
         .map((s, i) => {
-          // Logika tampilan warna khusus untuk juara 1, 2, dan 3
-          let bgStyle = "bg-white/50";
-          let rankColor = "bg-slate-100 text-slate-500";
+          let bgStyle = "bg-white";
+          let rankColor = "bg-slate-200 text-slate-800";
           let icon = "";
 
           if (i === 0) {
-            bgStyle = "bg-yellow-50/80 border border-yellow-200";
-            rankColor = "bg-yellow-400 text-white shadow-yellow-200";
+            bgStyle = "bg-amber-200";
+            rankColor = "bg-amber-400 text-slate-900";
             icon = "👑";
           } else if (i === 1) {
-            bgStyle = "bg-slate-50/80 border border-slate-200";
-            rankColor = "bg-slate-400 text-white shadow-slate-200";
+            bgStyle = "bg-sky-100";
+            rankColor = "bg-sky-300 text-slate-900";
+            icon = "🥈";
           } else if (i === 2) {
-            bgStyle = "bg-orange-50/80 border border-orange-200";
-            rankColor = "bg-orange-400 text-white shadow-orange-200";
+            bgStyle = "bg-orange-100";
+            rankColor = "bg-orange-300 text-slate-900";
+            icon = "🥉";
           }
 
           return `
-        <div class="flex items-center justify-between p-4 ${bgStyle} rounded-2xl shadow-sm transition-all hover:translate-x-1">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center font-black shadow-lg ${rankColor}">
+        <div class="flex items-center justify-between p-3.5 ${bgStyle} rounded-2xl pop-border-sm transition-transform hover:-translate-y-0.5">
+            <div class="flex items-center gap-3.5">
+                <div class="w-9 h-9 rounded-xl border-2 border-slate-900 flex items-center justify-center font-display text-base ${rankColor}">
                     ${i + 1}
                 </div>
                 <div>
-                    <p class="font-extrabold text-slate-800 text-lg">${s.name} ${icon}</p>
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">${s.date}</p>
+                    <p class="font-extrabold text-slate-900 text-base leading-tight">${s.name} ${icon}</p>
+                    <p class="text-[10px] text-slate-600 font-bold uppercase tracking-wider mt-0.5">${s.date}</p>
                 </div>
             </div>
             <div class="text-right">
-                <p class="font-black text-indigo-600 text-2xl leading-none">${s.score.toLocaleString()}</p>
-                <p class="text-[9px] text-slate-400 font-bold mt-1">PTS</p>
+                <p class="font-display text-violet-700 text-xl leading-none">${s.score.toLocaleString()}</p>
+                <p class="text-[9px] text-slate-600 font-extrabold mt-0.5">POIN</p>
             </div>
         </div>`;
         })
         .join("")
-    : `<div class="text-center py-20">
-                    <p class="text-4xl">📭</p>
-                    <p class="text-slate-400 font-bold mt-2">Belum ada skor tercatat</p>
-                  </div>`;
+    : `<div class="text-center py-16 bg-white rounded-2xl pop-border-sm">
+          <p class="text-4xl">📭</p>
+          <p class="text-slate-600 font-extrabold mt-2 text-sm">Belum ada skor tercatat</p>
+       </div>`;
 
   showScreen("leaderboard-screen");
 }

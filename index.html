@@ -3,124 +3,223 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Memory Card</title>
+    <title>KARTU PINTAR // Edu-Memory Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <!-- Welcome Screen -->
   <body class="min-h-full overflow-x-hidden">
-    <div id="app" class="relative w-full h-full">
+    <div id="app" class="relative w-full min-h-screen">
+      <!-- ==========================================
+           1. WELCOME SCREEN (MENU UTAMA)
+           ========================================== -->
       <div
         id="welcome-screen"
-        class="screen min-h-full flex flex-col items-center justify-center p-6"
+        class="screen min-h-screen flex flex-col items-center justify-center p-5"
       >
         <div class="max-w-md w-full text-center">
-          <div class="mb-6 float-animation text-6xl">🎮</div>
-          <h1 class="text-4xl text-white font-extrabold gradient-text mb-2">
-            Memori Game
-          </h1>
-          <p class="text-white mb-8">Meningkatkan Daya Ingat</p>
+          <!-- Badge Atas -->
+          <div
+            class="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full pop-border-sm mb-4"
+          >
+            <span class="text-lg">🃏</span>
+            <span
+              class="text-xs font-extrabold uppercase tracking-wider text-slate-800"
+            >
+              Edisi Kuartet Edukasi
+            </span>
+          </div>
 
-          <div class="bg-white rounded-2xl shadow-xl p-6 mb-6">
+          <h1
+            class="font-display text-5xl sm:text-6xl text-slate-900 tracking-tight mb-2 pop-title"
+          >
+            MEMORI<br />PINTAR!
+          </h1>
+          <p class="text-sm font-bold text-slate-700 mb-6">
+            Cocokkan Pasangan Kartu &amp; Uji Ingatanmu
+          </p>
+
+          <!-- Kotak Form Input & Pilih Mapel -->
+          <div class="bg-white rounded-3xl pop-card p-6 mb-5 text-left">
+            <label
+              for="player-name"
+              class="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-2"
+            >
+              Nama Pemain:
+            </label>
             <input
               type="text"
               id="player-name"
-              placeholder="Masukkan Nama..."
-              class="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:border-red-500 outline-none transition-all mb-4"
+              placeholder="Ketik namamu di sini..."
+              class="w-full px-4 py-3.5 bg-amber-50/60 rounded-xl pop-input font-bold text-slate-800 placeholder:text-slate-400 outline-none mb-5"
             />
-            <p class="text-left text-sm font-bold text-gray-500 mb-3">
-              Pilih Mapel:
+
+            <p
+              class="text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-2.5"
+            >
+              Pilih Dek Mata Pelajaran:
             </p>
-            <div class="grid grid-cols-3 gap-2">
+            <div class="grid grid-cols-3 gap-2.5">
               <button
-                onclick="selectMode('ppkn')"
-                class="mode-btn p-2 border-2 border-gray-100 rounded-lg text-xs font-bold active-mode"
+                onclick="selectMode('ppkn', this)"
+                class="mode-btn p-3 rounded-xl text-xs font-extrabold flex flex-col items-center gap-1 active-mode"
               >
-                📜PPKn
+                <span class="text-xl">📜</span>
+                <span>PPKn</span>
               </button>
               <button
-                onclick="selectMode('agamaislam')"
-                class="mode-btn p-2 border-2 border-gray-100 rounded-lg text-xs font-bold"
+                onclick="selectMode('agamaislam', this)"
+                class="mode-btn p-3 rounded-xl text-xs font-extrabold flex flex-col items-center gap-1"
               >
-                🌙Agama
+                <span class="text-xl">🌙</span>
+                <span>Agama</span>
               </button>
               <button
-                onclick="selectMode('pjok')"
-                class="mode-btn p-2 border-2 border-gray-100 rounded-lg text-xs font-bold"
+                onclick="selectMode('pjok', this)"
+                class="mode-btn p-3 rounded-xl text-xs font-extrabold flex flex-col items-center gap-1"
               >
-                🏃‍♂️PJOK
+                <span class="text-xl">🏃‍♂️</span>
+                <span>PJOK</span>
               </button>
             </div>
           </div>
 
-          <button
-            onclick="startGame()"
-            class="w-full py-4 btn-primary text-white font-bold rounded-2xl shadow-lg transition-all mb-4"
-          >
-            🚀 Mulai
-          </button>
-          <button
-            onclick="openLeaderboard()"
-            class="w-full py-3 bg-white border-2 border-blue-600 text-blue-600 font-bold rounded-xl"
-          >
-            🏆 Lihat Leaderboard
-          </button>
+          <!-- Tombol Aksi Utama -->
+          <div class="space-y-3">
+            <button
+              onclick="startGame()"
+              class="w-full py-4 btn-pop-primary font-display text-xl tracking-wide rounded-2xl"
+            >
+              🚀 MULAI BERMAIN
+            </button>
+            <button
+              onclick="openLeaderboard()"
+              class="w-full py-3.5 btn-pop-secondary font-extrabold text-sm rounded-2xl"
+            >
+              🏆 PAPAN PERINGKAT (TOP 10)
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Game Screen -->
-      <div id="game-screen" class="screen hidden min-h-full flex flex-col p-4">
-        <div
-          class="bg-white rounded-xl shadow-md p-4 mb-4 flex justify-between items-center"
-        >
-          <div class="text-xs">
-            <p class="text-gray-400">Pemain</p>
-            <p id="display-player" class="font-bold">-</p>
-          </div>
-          <div class="flex gap-4 text-center">
-            <div>
-              <p class="text-[10px] text-gray-400">Waktu</p>
-              <p id="timer" class="font-bold text-red-600">00:00</p>
+      <!-- ==========================================
+           2. GAME SCREEN (PAPAN PERMAINAN)
+           ========================================== -->
+      <div
+        id="game-screen"
+        class="screen hidden min-h-screen flex flex-col justify-between p-4 sm:p-6"
+      >
+        <!-- Header Status Permainan -->
+        <div class="max-w-lg mx-auto w-full">
+          <div
+            class="bg-white rounded-2xl pop-card p-3.5 sm:p-4 mb-5 flex flex-wrap justify-between items-center gap-3"
+          >
+            <div class="flex items-center gap-2.5">
+              <button
+                onclick="backToMenu()"
+                title="Kembali ke Menu"
+                class="w-10 h-10 rounded-xl bg-rose-100 hover:bg-rose-200 border-2 border-slate-900 flex items-center justify-center font-extrabold text-slate-900 transition active:translate-y-0.5"
+              >
+                ←
+              </button>
+              <div>
+                <p
+                  class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400"
+                >
+                  Pemain Aktif
+                </p>
+                <p
+                  id="display-player"
+                  class="font-extrabold text-sm sm:text-base text-slate-900 truncate max-w-[120px]"
+                >
+                  -
+                </p>
+              </div>
             </div>
-            <div>
-              <p class="text-[10px] text-gray-400">Langkah</p>
-              <p id="moves" class="font-bold text-amber-600">0</p>
+
+            <div class="flex gap-2.5 text-center">
+              <div
+                class="bg-rose-100 border-2 border-slate-900 rounded-xl px-3 py-1.5 min-w-[72px]"
+              >
+                <p
+                  class="text-[9px] font-extrabold uppercase tracking-wider text-rose-700"
+                >
+                  Waktu
+                </p>
+                <p id="timer" class="font-display text-base text-slate-900">
+                  00:00
+                </p>
+              </div>
+              <div
+                class="bg-sky-100 border-2 border-slate-900 rounded-xl px-3 py-1.5 min-w-[72px]"
+              >
+                <p
+                  class="text-[9px] font-extrabold uppercase tracking-wider text-sky-800"
+                >
+                  Langkah
+                </p>
+                <p id="moves" class="font-display text-base text-slate-900">
+                  0
+                </p>
+              </div>
             </div>
           </div>
+
+          <!-- Grid 16 Kartu -->
+          <div
+            id="game-board"
+            class="grid grid-cols-4 gap-2.5 sm:gap-3.5 max-w-lg mx-auto w-full"
+          ></div>
         </div>
-        <div
-          id="game-board"
-          class="grid grid-cols-4 gap-2 max-w-lg mx-auto w-full"
-        ></div>
+
+        <p class="text-center text-xs font-bold text-slate-600 mt-4">
+          Buka 2 kartu yang sama hingga seluruh 8 pasangan terbuka!
+        </p>
       </div>
 
-      <!-- Win Screen -->
+      <!-- ==========================================
+           3. WIN SCREEN (LAYAR KEMENANGAN)
+           ========================================== -->
       <div
         id="win-screen"
-        class="screen hidden min-h-full flex items-center justify-center p-6 text-center"
+        class="screen hidden min-h-screen flex items-center justify-center p-6 text-center"
       >
-        <div
-          class="bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl p-8 max-w-sm w-full border border-white animate-fade-in"
-        >
-          <div class="text-6xl mb-4">🥳</div>
-          <h2 class="text-3xl font-black text-slate-800 mb-2">Luar Biasa!</h2>
-
+        <div class="bg-white rounded-3xl pop-card p-7 sm:p-8 max-w-sm w-full">
           <div
-            class="bg-blue-50/50 rounded-3xl p-6 mb-8 border border-blue-100"
+            class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-amber-300 border-3 border-slate-900 flex items-center justify-center text-5xl pop-border-sm"
+          >
+            🥳
+          </div>
+          <h2 class="font-display text-3xl text-slate-900 mb-1">
+            HEBAT SEKALI!
+          </h2>
+          <p class="text-xs font-bold text-slate-500 mb-5">
+            Semua pasangan kartu berhasil kamu temukan!
+          </p>
+
+          <!-- Kotak Skor Akhir -->
+          <div
+            class="bg-violet-100 rounded-2xl p-5 mb-6 border-3 border-slate-900"
           >
             <p
-              class="text-slate-500 text-sm font-bold uppercase tracking-widest mb-1"
+              class="text-slate-700 text-xs font-extrabold uppercase tracking-widest mb-1"
               id="win-player"
             ></p>
-            <p class="text-5xl font-black text-blue-600 my-2" id="final-score">
+            <p
+              class="font-display text-5xl text-violet-700 my-2"
+              id="final-score"
+            >
               0
             </p>
-            <p class="text-xs text-blue-400 font-bold uppercase">
+            <p
+              class="text-[11px] text-slate-600 font-extrabold uppercase tracking-wider"
+            >
               Total Skor Akhir
             </p>
           </div>
@@ -128,63 +227,68 @@
           <div class="space-y-3">
             <button
               onclick="startGame()"
-              class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg shadow-blue-200 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              class="w-full py-4 btn-pop-primary font-display text-lg rounded-2xl"
             >
               🔄 MAIN LAGI
             </button>
 
             <button
               onclick="backToMenu()"
-              class="w-full py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all"
+              class="w-full py-3.5 btn-pop-secondary font-extrabold text-sm rounded-2xl"
             >
-              MENU UTAMA
+              KEMBALI KE MENU
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Leaderboard Screen -->
+      <!-- ==========================================
+           4. LEADERBOARD SCREEN (PAPAN SKOR)
+           ========================================== -->
       <div
         id="leaderboard-screen"
-        class="screen hidden min-h-full flex items-center justify-center p-4"
+        class="screen hidden min-h-screen flex items-center justify-center p-4"
       >
         <div
-          class="max-w-md w-full bg-white/70 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/50 overflow-hidden flex flex-col h-[85vh] animate-fade-in"
+          class="max-w-md w-full bg-white rounded-3xl pop-card overflow-hidden flex flex-col h-[84vh]"
         >
+          <!-- Header Leaderboard -->
           <div
-            class="p-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white relative"
+            class="p-6 bg-violet-600 text-white border-b-3 border-slate-900 relative overflow-hidden"
           >
-            <div class="flex justify-between items-start">
+            <div class="flex justify-between items-center relative z-10">
               <div>
-                <h2 class="text-3xl font-black tracking-tight">Leaderboard</h2>
-                <p class="text-blue-100 text-sm font-medium mt-1">
-                  Top 10 Pemain Teratas!
-                </p>
+                <span
+                  class="inline-block bg-amber-300 text-slate-900 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border-2 border-slate-900 mb-1"
+                >
+                  Hall of Fame
+                </span>
+                <h2 class="font-display text-3xl tracking-tight">
+                  Top 10 Juara
+                </h2>
               </div>
               <button
                 onclick="backToMenu()"
-                class="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-all"
+                class="w-10 h-10 bg-white text-slate-900 border-2 border-slate-900 rounded-xl font-extrabold flex items-center justify-center hover:bg-rose-100 transition"
               >
+                ✕
               </button>
             </div>
-            <span class="absolute -bottom-4 -right-4 text-8xl opacity-20"
-              >🏆</span
-            >
           </div>
 
+          <!-- Daftar Pemain -->
           <div
             id="leaderboard-list"
-            class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar"
+            class="flex-1 overflow-y-auto p-5 space-y-3 custom-scrollbar bg-amber-50/40"
           ></div>
 
-          <div
-            class="p-6 bg-white/50 backdrop-blur-md border-t border-white/20"
-          >
+          <!-- Footer Tombol -->
+          <div class="p-4 bg-white border-t-3 border-slate-900">
             <button
               onclick="backToMenu()"
-              class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg shadow-blue-200 hover:scale-[1.02] active:scale-[0.98] transition-all tracking-wide"
+              class="w-full py-3.5 btn-pop-primary font-display text-base rounded-2xl tracking-wide"
             >
-              KEMBALI KE MENU
+              KEMBALI KE MENU UTAMA
             </button>
           </div>
         </div>
